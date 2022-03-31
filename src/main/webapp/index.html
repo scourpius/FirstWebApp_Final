@@ -1,20 +1,47 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-  <head>
-    <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
-    <title>Hello App Engine</title>
-  </head>
+<html>
+	<title>First Web App</title>
+	<head>
+		<style>
+		.center {
+  			text-align: center;
+  			font-size: 300%;
+		}
+		
+		.button1 {
+ 			color: white;
+  			padding: 15px 32px;
+ 			text-align: center;
+ 			font-size: 16px;
+ 			cursor: pointer;
+ 			position:absolute;
+            top: 25%;
+            background-color:green;
+            left: 40%;
+		}
+		
+		.button2 {
+ 			color: white;
+  			padding: 15px 32px;
+ 			text-align: center;
+ 			font-size: 16px;
+ 			cursor: pointer;
+ 			position:absolute;
+            top: 25%;
+            background-color:red;
+            left: 53%;
+		}
+		
+		</style>
+	</head>
+	<body>
 
-  <body>
-    <h1>Hello App Engine!</h1>
-
-    <table>
-      <tr>
-        <td colspan="2" style="font-weight:bold;">Available Servlets:</td>        
-      </tr>
-      <tr>
-        <td><a href='/hello'>The servlet</a></td>
-      </tr>
-    </table>
-  </body>
+	<div class="center">
+  		<p>Welcome to my website!</p>
+	</div>
+    <button onclick = "location.href='https://our-hull-344121.appspot.com/login'" class = "button1">Login</button>
+	<button onclick = "location.href='https://storage.googleapis.com/our-hull-344121.appspot.com/wakeupcover.jpg'" class = "button2">Register</button>
+	</body>
 </html>
+
+

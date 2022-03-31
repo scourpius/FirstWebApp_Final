@@ -27,9 +27,6 @@ public class RegisterResource {
 
 	private	final Datastore datastore = DatastoreOptions.getDefaultInstance().getService();
 
-	/**
-	 * Logger Object
-	 */
 	private static final Logger LOG = Logger.getLogger(RegisterResource.class.getName());
 
 	public RegisterResource( ) {}
@@ -45,10 +42,10 @@ public class RegisterResource {
 			return Response.status(Status.BAD_REQUEST).entity("Missing or wrong parameter.").build();
 		}
 
+		Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.username);
 		Transaction txn = datastore.newTransaction();
 
 		try {
-			Key userKey = datastore.newKeyFactory().setKind("User").newKey(data.username);
 			Entity user = txn.get(userKey);
 
 			if(user != null) {
@@ -57,19 +54,21 @@ public class RegisterResource {
 				return Response.status(Status.BAD_REQUEST).entity("User already exists.").build();
 			} else {
 				user = Entity.newBuilder(userKey)
-						.set("password", DigestUtils.sha512Hex(data.password))
 						.set("email", data.email)
 						.set("name", data.name)
+						.set("password", DigestUtils.sha512Hex(data.password))
+						.set("telefone", data.telefone)
+						.set("telemovel", data.telemovel)
+						.set("morada", data.morada)
+						.set("nif", data.nif)
 						.set("userCreationTime", Timestamp.now())
 						.build();
 			}
 
 			txn.add(user);
-
-			LOG.info("Registration of " + data.username + " successful.");
-			
 			txn.commit();
-
+			
+			LOG.fine("Registration of " + data.username + " successful.");
 			return Response.ok("{}").build();
 		} finally {
 			if(txn.isActive())
