@@ -8,12 +8,90 @@
   			font-size: 300%;
 		}
 		
+		.info{
+			text-align:center;
+		}
+		
+		.vertical-center {
+ 			 margin: 0;
+ 			 position: absolute;
+ 			 left: 50%;
+		}
+		
+		.vertical-center2 {
+ 			 margin: 0;
+ 			 position: absolute;
+ 			 left: 50%;
+ 			 top:21.2%;
+		}
+		
 		</style>
 	</head>
 	<body>
 
 	<div class="center">
-  		<p>Welcome to my website 1!</p>
+  		<p>Welcome to the login page!</p>
+	</div>
+	
+	<div class = "info">Username
+		<input type = "text" id = "username">
+	</div>
+	<div class = "info">Password
+		<input type = "password" id = "password">
+	</div>
+	<div class = "vertical-center">
+		<button type="button" onclick="processInput()">LoginV1</button>
+	</div>
+	<div class = "vertical-center2">
+		<button type="button" onclick="UserAction()">LoginV2</button>
 	</div>
 	</body>
+	
+	<script type="text/javascript">
+        var xmlhttp = new XMLHttpRequest();
+        
+        function UserAction() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                 if (this.readyState == 4 && this.status == 200) {
+                     consolelog("Ready");
+                 }
+            };
+            
+            var u_username = new String(document.getElementById("username").value);
+            var u_password = new String(document.getElementById("password").value);
+
+            var obj = JSON.stringify({"username": u_username, "password": u_password});
+            
+            xhttp.open("POST", "https://our-hull-344121.appspot.com/rest/login/", true);
+            xhttp.setRequestHeader("Content-type", "application/json;charset=UTF-8");
+            xhttp.send(obj);
+        }
+        
+        function processInput(){
+            if (xmlhttp){
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200){
+                        const obj = JSON.parse(xmlhttp.responseText);
+                        console.log(xmlhttp.responseText);
+                        for (let i = 0 ; i < obj.length ; i++){
+                          console.log(obj[i]);
+                        }
+                      }
+                }
+                var u_username = new String(document.getElementById("username").value);
+                var u_password = new String(document.getElementById("password").value);
+
+                var obj = JSON.stringify({"username": u_username, "password": u_password});
+                
+                xmlhttp.open("POST", "https://our-hull-344121.appspot.com/rest/login/", true);
+                xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xmlhttp.send(obj);
+                
+            }
+        }
+        
+    </script>
 </html>
+
+

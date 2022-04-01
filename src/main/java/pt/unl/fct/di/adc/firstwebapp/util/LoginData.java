@@ -2,8 +2,7 @@ package pt.unl.fct.di.adc.firstwebapp.util;
 
 public class LoginData {
 
-	public String username;
-	public String password;
+	public String username, password;
 
 	public LoginData() {}
 

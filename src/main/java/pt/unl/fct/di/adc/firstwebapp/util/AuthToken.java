@@ -4,17 +4,17 @@ import java.util.UUID;
 
 public class AuthToken {
 	
-	public static final long EXPIRATION_TIME = 1000 * 60 * 60 * 2; // 2h
+	public static final long EXPIRATION_TIME = 1000 * 60 * 15; // 15 minutes
 	
 	public String username;
 	public String tokenID;
-	public long creationData;
-	public long expirationData;
+	public long creationTime;
+	public long expirationTime;
 
 	public AuthToken(String username) {
 		this.username = username;
 		this.tokenID = UUID.randomUUID().toString();
-		this.creationData = System.currentTimeMillis();
-		this.expirationData = this.creationData + AuthToken.EXPIRATION_TIME;
+		this.creationTime = System.currentTimeMillis();
+		this.expirationTime = this.creationTime + AuthToken.EXPIRATION_TIME;
 	}
 }
