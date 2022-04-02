@@ -21,7 +21,11 @@ public class PasswordUpdateData {
 		//Checks for empty data
 		if (this.username.length() == 0 || this.oldPassword.length() == 0 || this.newPassword.length() == 0 || this.confirmation.length() == 0)
 			return false;
-
+		
+		//New password can't be the same and the old password
+		if (this.newPassword == this.oldPassword)
+			return false;
+		
 		return this.newPassword.equals(this.confirmation);
 	}
 

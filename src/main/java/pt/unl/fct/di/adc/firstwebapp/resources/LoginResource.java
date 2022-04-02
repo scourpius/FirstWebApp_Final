@@ -75,7 +75,8 @@ public class LoginResource {
 				if(hashedPwd.equals(DigestUtils.sha512Hex(data.password))) {
 					Entity tokenEntity = txn.get(tokenKey);
 					
-					if (tokenEntity != null) {
+					//Checks if token exists or if it's still valid
+					if (tokenEntity != null && isLogged(tokenEntity)) {
 						txn.rollback();
 						LOG.warning("Attemp to log in into logged in account: " + data.username);
 						return Response.status(Status.FORBIDDEN).entity("User already logged in.").build();

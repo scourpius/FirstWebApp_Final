@@ -70,7 +70,7 @@ public class RemoveResource {
 				return Response.status(Status.FORBIDDEN).entity("User " +data.removed + " or user " + data.remover + " doesn't exists.").build();
 			}
 			
-			if (!canRemove(removedUser, removerUser) || !removedUser.toString().equals(removerUser.toString())) {
+			if (!removedUser.toString().equals(removerUser.toString()) || !canRemove(removedUser, removerUser)) {
 				txn.rollback();
 				LOG.warning("Insuficient role by user " + data.remover + " to remove user " + data.removed + ".");
 				return Response.status(Status.FORBIDDEN).entity("Insuficient role by user " + data.remover + " to remove user " + data.removed + ".").build();

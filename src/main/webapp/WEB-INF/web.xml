@@ -52,11 +52,6 @@
 		<servlet-name>jerseyServlet</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
-	
-	<servlet>
-		<servlet-name>storage-servlet</servlet-name>
-		<servlet-class>pt.unl.fct.di.adc.firstwebapp.resources.MediaResourceServlet</servlet-class>
-	</servlet>	
 
 	<servlet-mapping>
 		<servlet-name>storage-servlet</servlet-name>

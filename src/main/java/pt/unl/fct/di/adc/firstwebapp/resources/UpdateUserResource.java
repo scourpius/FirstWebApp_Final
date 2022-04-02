@@ -18,6 +18,7 @@ import com.google.cloud.datastore.Entity;
 import com.google.cloud.datastore.Key;
 import com.google.cloud.datastore.Transaction;
 
+import pt.unl.fct.di.adc.firstwebapp.util.AttributeUpdateData;
 import pt.unl.fct.di.adc.firstwebapp.util.PasswordUpdateData;
 
 @Path("/update")
@@ -87,7 +88,7 @@ public class UpdateUserResource {
 		}finally {
 			if(txn.isActive()) {
 				txn.rollback();
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity("[]").build();
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 			}
 		}
 	}
@@ -95,8 +96,71 @@ public class UpdateUserResource {
 	@PUT
 	@Path("/attributes")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateAttributes() {
-		return null;
+	public Response updateAttributes(AttributeUpdateData data) {
+        LOG.info("Attempt of update of attributes to user " + data.changed + " by user: " + data.changer);
+		
+		Key changerKey = datastore.newKeyFactory().setKind("User").newKey(data.changer);
+		Key changedKey = datastore.newKeyFactory().setKind("User").newKey(data.changed);
+		Key tokenKey = datastore.newKeyFactory().setKind("Token").newKey(data.changer);
+
+		Transaction txn = datastore.newTransaction();
+		try {
+			//Check if token is still valid
+			Entity token = txn.get(tokenKey);
+		
+			if (token == null || !r.isLogged(token)) {
+				txn.rollback();
+				LOG.warning("Attempt to change attributes by user " + data.changer +" who isn't logged in");
+				return Response.status(Status.FORBIDDEN).entity("User " + data.changer +" isn't logged in").build();
+			}
+			
+			if (!data.isValid()) {
+				LOG.warning("Invalid data for update of attributes of user: " + data.changed + " by user " + data.changer);
+				return Response.status(Status.BAD_REQUEST).entity("Missing or wrong parameter.").build();
+			}
+			
+			Entity changed = txn.get(changedKey);
+			Entity changer = txn.get(changerKey);
+			
+			if (changed == null) {
+				txn.rollback();
+				LOG.warning("Invalid update of attributes of user: " + data.changed + " by user " +data.changer + ".");
+				return Response.status(Status.FORBIDDEN).entity("User " + data.changed + " doesn't exists.").build();
+			}
+			
+			String changedRole = changed.getString("role");
+			String changerRole = changer.getString("role");
+			
+			if (!data.hasRole(changerRole, changedRole)) {
+				txn.rollback();
+				LOG.warning("Attempt by user " + data.changer+ "to change a user of higher role.");
+				return Response.status(Status.FORBIDDEN).entity("User " + data.changer + " does not have a high enough role to change attributes of user " + data.changed).build();
+			}
+			
+			changed = Entity.newBuilder(changedKey)
+					.set("email", data.email == null ? changed.getString("email") : data.email)
+					.set("name", data.name == null ? changed.getString("name") : data.name)
+					.set("password", changed.getString("password"))
+					.set("telefone", data.telefone == null ? changed.getString("telefone") : data.telefone)
+					.set("telemovel", data.telemovel == null ? changed.getString("telemovel"): data.telemovel)
+					.set("morada", data.morada == null ? changed.getString("morada"): data.morada)
+					.set("nif", data.nif == null ? changed.getString("nif"): data.nif)
+					.set("state", data.state == null ? changed.getString("state"): data.state)
+					.set("role", data.role == null ? changed.getString("role"): data.role)
+					.set("userCreationTime",  changed.getTimestamp("userCreationTime"))
+					.build();
+			
+			txn.put(changed);
+			txn.commit();
+			
+			LOG.fine("User " + data.changed + "'s password has been changed sucessfully.");
+			return Response.ok("User " + data.changer + " has changed user" + data.changed + "'s attributes.").build();
+		}finally {
+			if(txn.isActive()) {
+				txn.rollback();
+				return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+			}
+		}
 	}
 	
 }
